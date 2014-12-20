@@ -16,18 +16,21 @@ tr<-subset(tr,subset=T,select=c(roll_belt,pitch_belt,yaw_belt,total_accel_belt,g
 #check if NA are present
 #sapply(names(tr),function(c){any(is.na(tr[,c]))})
 
-inTr<-createDataPartition(y=tr$classe,p = .7,list=F)
+inTr<-createDataPartition(y=tr$classe,p = .3,list=F)
 
 tr2<-tr[inTr,]
 
 #predictors
-ps<-tr2[,-dim(tr2)[2]]
+pred<-tr2[,-dim(tr2)[2]]
 #outcomes
-os<-tr2[,dim(tr2)[2]]
+out<-tr2[,dim(tr2)[2]]
 
+#library(pROC)
+#RocImp <- filterVarImp(x = pred, y = out)
+#head(RocImp)
 
 #are any predictors varying very little to be insignificant
-nzv<-nearZeroVar(ps)
+nzv<-nearZeroVar(pred)
 nzv
 
 #detect correlated predictors, particularly highly correlated ones
@@ -36,24 +39,27 @@ nzv
 #ps2<-ps[,-highlyCor]#skip highly ones
 #dim(ps2)
 
-pp<-preProcess(ps,method="pca")
-psPC<-predict(pp,ps)
+#pp<-preProcess(ps,method="pca")
+#psPC<-predict(pp,ps)
 
 
+fitControl<-trainControl(method="cv", number=10)
+rfFit<-train(x=pred,y=as.factor(out),method="rf",trControl=fitControl,prox=T,allowParallel=T)
+rfFit
+rfFit$finalModel
+plot(varImp(rfFit))
 
-fitControl<-trainControl(method="cv", number=5)
-rfFit<-train(x=ps,y=as.factor(os),method="rf",trControl=fitControl,prox=T)
 
 
 ts2<-tr[-inTr,]
 #predictors
-psts3<-ts2[,1:dim(ts2)[2]-1]
-psts3<-predict(pp,psts3)
+pred2<-ts2[,-dim(ts2)[2]]
+#psts3<-predict(pp,psts3)
 #outcomes
-osts<-ts2[,dim(ts2)[2]]
-length(osts)  
-pred<-predict(rfFit,psts3)
-confusionMatrix(pred,osts)
+out2<-ts2[,dim(ts2)[2]]
+#length(osts)  
+res<-predict(rfFit,pred2)
+confusionMatrix(res,out2)
 
 
 test<-read.csv("pml-testing.csv")

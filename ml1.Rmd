@@ -60,15 +60,13 @@ Most of the readings form the features, excluding the aggregated ones like avera
 *. No NAs are found in the variables
 *. Partition the training data. 
 *. No near zero variance variables found
-*. ??? Preprocessing
 
 ```{r}
 library(caret)
-library(doParallel)
-
 set.seed(300)
 tr<-read.csv("pml-training.csv")
 
+library(doParallel)
 registerDoParallel(cores=detectCores(all.tests=TRUE))
                    
 tr<-subset(tr,new_window=="no")
@@ -79,27 +77,27 @@ inTr<-createDataPartition(y=tr$classe,p = .3,list=F)
 tr2<-tr[inTr,]
 
 #predictors
-ps<-tr2[,1:dim(tr2)[2]-1]
+pred<-tr2[,-dim(tr2)[2]]
 #outcomes
-os<-tr2[,dim(tr2)[2]]
+out<-tr2[,dim(tr2)[2]]
 
 #are any predictors varying very little to be insignificant
-nzv<-nearZeroVar(ps)
+nzv<-nearZeroVar(pred)
 nzv
 
 ```
 
 ### Training the Model
 
-* 5-fold cross validation suits this case during the training process
+* 10-fold cross validation suits this case during the training process
 * We need to select some classification model
 * There can be some strong and weak predictors due to overlap because of earth's forces. So Random Forest with bagging model 
 suits better.
 
 
 ```{r}
-fitControl<-trainControl(method="cv", number=5)
-rfFit<-train(x=psPC,y=as.factor(os),method="rf",trControl=fitControl,prox=T,allowParallel=T)
+fitControl<-trainControl(method="cv", number=10)
+rfFit<-train(x=pred,y=as.factor(out),method="rf",trControl=fitControl,prox=T,allowParallel=T)
 
 ```
 
@@ -107,30 +105,37 @@ rfFit<-train(x=psPC,y=as.factor(os),method="rf",trControl=fitControl,prox=T,allo
 
 ```{r}
 rfFit
+rfFit$finalModel
+plot(varImp(rfFit))
+
 ```
 
-It confirms what we are trying to do in terms of resampling, preprocessing, cross validation information, count of trees 
+It confirms what we are trying to do in terms of predictors, classes, resampling, preprocessing, cross validation information, count of trees 
 and accuracy output. The model has selected various mtry options (count of predictors selected in each split). 
 The best, most accurate one, will be selected.
+
+The important variables are also plotted.
 
 The model is ready to be tested.
 
 ### Testing the Model
 
 ```{r}
+
 ts2<-tr[-inTr,]
 #predictors
-psts3<-ts2[,1:dim(ts2)[2]-1]
-psts3<-predict(pp,psts3)
+pred2<-ts2[,-dim(ts2)[2]]
+#psts3<-predict(pp,psts3)
 #outcomes
-osts<-ts2[,dim(ts2)[2]]
-pred<-predict(rfFit,psts3)
-confusionMatrix(pred,osts)
+out2<-ts2[,dim(ts2)[2]]
+#length(osts)  
+res<-predict(rfFit,pred2)
+confusionMatrix(res,out2)
 
 ```
 
-The most important parameter is:
-Accuracy: ???
+The most important parameter is accuracy. P-values indicates that we fail to reject the null hypothesis.
+Accuracy: 0.9819
 
 It confirms our good faith in the model.
 
