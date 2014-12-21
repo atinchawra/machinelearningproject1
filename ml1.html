@@ -132,8 +132,6 @@ rfFit&lt;-train(x=pred,y=as.factor(out),method=&quot;rf&quot;,trControl=fitContr
 <pre><code>## Loading required package: randomForest
 ## randomForest 4.6-10
 ## Type rfNews() to see new features/changes/bug fixes.</code></pre>
-<pre><code>## Warning in nominalTrainWorkflow(x = x, y = y, wts = weights, info =
-## trainInfo, : There were missing values in resampled performance measures.</code></pre>
 </div>
 <div id="modelfit-analysis" class="section level3">
 <h3>Model/Fit Analysis</h3>
@@ -152,13 +150,13 @@ rfFit&lt;-train(x=pred,y=as.factor(out),method=&quot;rf&quot;,trControl=fitContr
 ## Resampling results across tuning parameters:
 ## 
 ##   mtry  Accuracy   Kappa      Accuracy SD  Kappa SD   
-##    2    0.9722709  0.9649149  0.007312998  0.009243845
-##   20    0.9768936  0.9707735  0.006329373  0.007996176
-##   39    0.9675846  0.9589823  0.007950451  0.010055009
+##    2    0.9717506  0.9642550  0.008498806  0.010747859
+##   20    0.9774669  0.9714976  0.006147680  0.007764971
+##   39    0.9663741  0.9574495  0.009753114  0.012334707
 ## 
 ## Accuracy was used to select the optimal model using  the largest value.
 ## The final value used for the model was mtry = 20.</code></pre>
-<pre class="r"><code>rfFit$finalModel</code></pre>
+<pre class="r"><code>rfFit$finalMode</code></pre>
 <pre><code>## 
 ## Call:
 ##  randomForest(x = x, y = y, mtry = param$mtry, proximity = ..1,      allowParallel = ..2) 
@@ -222,8 +220,8 @@ confusionMatrix(res,out2)</code></pre>
 ## Detection Rate         0.2831   0.1854   0.1718   0.1591   0.1815
 ## Detection Prevalence   0.2876   0.1892   0.1793   0.1617   0.1823
 ## Balanced Accuracy      0.9940   0.9767   0.9878   0.9844   0.9939</code></pre>
-<p>The most important parameter is accuracy. P-values indicates that we fail to reject the null hypothesis.</p>
-<p>Accuracy: 0.9819</p>
+<p>The most important parameter is accuracy. P-values indicates that we reject the null hypothesis.</p>
+<p>Accuracy: 0.9809</p>
 <p>It confirms our good faith in the model.</p>
 </div>
 
