@@ -150,9 +150,9 @@ rfFit&lt;-train(x=pred,y=as.factor(out),method=&quot;rf&quot;,trControl=fitContr
 ## Resampling results across tuning parameters:
 ## 
 ##   mtry  Accuracy   Kappa      Accuracy SD  Kappa SD   
-##    2    0.9717506  0.9642550  0.008498806  0.010747859
-##   20    0.9774669  0.9714976  0.006147680  0.007764971
-##   39    0.9663741  0.9574495  0.009753114  0.012334707
+##    2    0.9717500  0.9642515  0.007888348  0.009971717
+##   20    0.9774702  0.9714976  0.007000442  0.008849739
+##   39    0.9668931  0.9581073  0.009058047  0.011457422
 ## 
 ## Accuracy was used to select the optimal model using  the largest value.
 ## The final value used for the model was mtry = 20.</code></pre>
@@ -222,6 +222,7 @@ confusionMatrix(res,out2)</code></pre>
 ## Balanced Accuracy      0.9940   0.9767   0.9878   0.9844   0.9939</code></pre>
 <p>The most important parameter is accuracy. P-values indicates that we reject the null hypothesis.</p>
 <p>Accuracy: 0.9809</p>
+<p>Out-of-sample error: 1.1%</p>
 <p>It confirms our good faith in the model.</p>
 </div>
 
