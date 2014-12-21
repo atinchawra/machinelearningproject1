@@ -11,7 +11,7 @@ output:
 This document tries to study existing data, create model and predict quality of dumbbell exercise performed by multiple participants.
 
 Using devices such as Jawbone Up, Nike FuelBand, and Fitbit it is now possible to collect a large amount of data about personal activity relatively inexpensively. 
-These type of devices are part of the quantified self movement – a group of enthusiasts who take measurements about themselves regularly to improve their health, 
+These type of devices are part of the quantified self movement ? a group of enthusiasts who take measurements about themselves regularly to improve their health, 
 to find patterns in their behavior, or because they are tech geeks. One thing that people regularly do is quantify how much of a particular activity they do, 
 but they rarely quantify how well they do it.
 
@@ -55,18 +55,18 @@ Most of the readings form the features, excluding the aggregated ones like avera
 
 ### Data Processing
 
-*. Read the training and test data. 
-*. Filter the data horizontally and vertically as per the selected features.
-*. No NAs are found in the variables
-*. Partition the training data. 
-*. No near zero variance variables found
+* Read the training and test data  
+* Filter the data horizontally and vertically as per the selected features     
+* No NAs are found in the variables  
+* Partition the training data  
+* No near zero variance variables found  
 
 ```{r}
 library(caret)
 set.seed(300)
 tr<-read.csv("pml-training.csv")
 
-library(doParallel)
+library(doParallel) 
 registerDoParallel(cores=detectCores(all.tests=TRUE))
                    
 tr<-subset(tr,new_window=="no")
@@ -89,13 +89,14 @@ nzv
 
 ### Training the Model
 
-* 10-fold cross validation suits this case during the training process
-* We need to select some classification model
-* There can be some strong and weak predictors due to overlap because of earth's forces. So Random Forest with bagging model 
-suits better.
+* 10-fold cross validation suits this case during the training process  
+* We need to select some classification model  
+* There can be some strong and weak predictors due to overlap because of earth's forces     
+
+So Random Forest with bagging model suits better  
 
 
-```{r}
+```{r,cache=TRUE}
 fitControl<-trainControl(method="cv", number=10)
 rfFit<-train(x=pred,y=as.factor(out),method="rf",trControl=fitControl,prox=T,allowParallel=T)
 
@@ -105,7 +106,7 @@ rfFit<-train(x=pred,y=as.factor(out),method="rf",trControl=fitControl,prox=T,all
 
 ```{r}
 rfFit
-rfFit$finalModel
+rfFit$finalMode
 plot(varImp(rfFit))
 
 ```
@@ -134,8 +135,9 @@ confusionMatrix(res,out2)
 
 ```
 
-The most important parameter is accuracy. P-values indicates that we fail to reject the null hypothesis.
-Accuracy: 0.9819
+The most important parameter is accuracy. P-values indicates that we reject the null hypothesis.
+
+Accuracy: 0.9809
 
 It confirms our good faith in the model.
 
