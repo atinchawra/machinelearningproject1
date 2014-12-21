@@ -54,12 +54,12 @@ plot(varImp(rfFit))
 ts2<-tr[-inTr,]
 #predictors
 pred2<-ts2[,-dim(ts2)[2]]
-#psts3<-predict(pp,psts3)
+8#psts3<-predict(pp,psts3)
 #outcomes
 out2<-ts2[,dim(ts2)[2]]
 #length(osts)  
 res<-predict(rfFit,pred2)
-confusionMatrix(res,out2)
+cm<-confusionMatrix(res,out2)
 
 
 test<-read.csv("pml-testing.csv")
@@ -68,3 +68,4 @@ test<-subset(test,subset=T,select=c(roll_belt,pitch_belt,yaw_belt,total_accel_be
 #test<-predict(pp,test)
 pred2<-predict(rfFit,newdata=test)
 pred2
+

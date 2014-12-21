@@ -139,6 +139,9 @@ The most important parameter is accuracy. P-values indicates that we reject the 
 
 Accuracy: 0.9809
 
+Out-of-sample error: 1.1%
+
+
 It confirms our good faith in the model.
 
 
